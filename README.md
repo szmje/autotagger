@@ -9,12 +9,12 @@
 ---
 
 <p align="center">
-  <b><a href="#-русский">🇷🇺 Читать на русском</a></b> &nbsp;•&nbsp; <b><a href="#-english">🇬🇧 Read in English</a></b>
+  <b><a href="#русский">Читать на русском</a></b> &nbsp;|&nbsp; <b><a href="#english">Read in English</a></b>
 </p>
 
 ---
 
-## 🇷🇺 Русский
+## Русский
 
 **AutoTagger RYM** — утилита с GUI для нормального тегирования музыкальной библиотеки. Подтягивает официальные метаданные из **MusicBrainz** и **Discogs**, цепляет специфичные жанры с **RateYourMusic (RYM)**, качает тайминги караоке-текстов (`.lrc`), вшивает обложки в хайрезе, чистит мусор из тегов и правильно раскладывает мультидисковые релизы под стандарты **MusicBee** и **foobar2000**.
 
@@ -77,7 +77,7 @@ yung lean; bladee
   - `Artist - Title`
 - Предпросмотр итоговых имен в реальном времени.
 - Автоматическая зачистка запрещенных символов Windows (`/ \ : * ? " < > |`).
-- Кнопка «📁 Папку» для быстрого переименования каталога в `Artist - Album (Year)`.
+- Кнопка «Папку» для быстрого переименования каталога в `Artist - Album (Year)`.
 
 #### 7. Синхронизированные тексты (.lrc + караоке)
 - Подтягивает построчные таймкоды через базу `syncedlyrics` (Musixmatch, Deezer, NetEase и др.).
@@ -131,7 +131,7 @@ python main.py
 
 ---
 
-## 🇬🇧 English
+## English
 
 **AutoTagger RYM** — GUI utility designed to tag music libraries properly. Fetches verified metadata from **MusicBrainz** and **Discogs**, scrapes niche subgenres from **RateYourMusic (RYM)**, pulls karaoke-timed lyrics (`.lrc`), embeds high-res covers, cleans promotional junk tags, and handles multi-disc releases according to **MusicBee** and **foobar2000** standards.
 
@@ -194,7 +194,7 @@ yung lean; bladee
   - `Artist - Title`
 - Real-time preview of target filenames.
 - Automatic sanitization of forbidden Windows characters (`/ \ : * ? " < > |`).
-- «📁 Folder» button to quickly rename directory to `Artist - Album (Year)`.
+- «Folder» button to quickly rename directory to `Artist - Album (Year)`.
 
 #### 7. Synced Lyrics (.lrc + Karaoke)
 - Fetches line-by-line timestamps via `syncedlyrics` (Musixmatch, Deezer, NetEase, etc.).
