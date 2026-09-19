@@ -1,0 +1,33 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local API caches
+.discogs_cache.json
+.lyrics_cache.json
+.rym_cache.json
+*.cache
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Scratch and temporary testing files
+scratch/
+*.tmp
+*.log
+
+# Local media used during testing
+cover.jpg
+cover.png
+*.lrc
+
+# OS and IDE files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

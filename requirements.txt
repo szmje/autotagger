@@ -1,0 +1,10 @@
+mutagen>=1.47.0
+curl_cffi>=0.13.0
+beautifulsoup4>=4.12.0
+musicbrainzngs>=0.7.1
+requests>=2.31.0
+rapidfuzz>=3.0.0
+rich>=13.0.0
+windnd>=1.0.7
+pillow>=10.0.0
+syncedlyrics>=0.6.0
