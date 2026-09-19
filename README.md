@@ -156,49 +156,6 @@ python main.py -y "D:\Music\Album1" "D:\Music\Album2"
 python main.py --gui "D:\Music\Album1"
 ```
 
----
-
-### 📤 Инструкция: Как загрузить проект на GitHub
-
-Если вы хотите опубликовать этот проект в своём репозитории на GitHub:
-
-#### Шаг 1: Создайте репозиторий на GitHub
-1. Перейдите на страницу создания нового репозитория: [github.com/new](https://github.com/new).
-2. Введите имя репозитория (например, `autotagger` или `autotagger-rym`).
-3. Сделайте его **Public** (публичным) или **Private** (приватным).
-4. **Важно:** Не ставьте галочки «Add a README file», «Add .gitignore» или «Choose a license» (они уже подготовлены в проекте).
-5. Нажмите зелёную кнопку **«Create repository»**.
-
-#### Шаг 2: Отправьте код из терминала
-Откройте терминал (PowerShell или командную строку) в папке проекта (`d:\DESKTOP\autotagger`) и выполните по очереди:
-
-```bash
-# 1. Инициализируем локальный git-репозиторий
-git init
-
-# 2. Добавляем все файлы проекта (кэш и временные файлы автоматически исключены файлом .gitignore)
-git add .
-
-# 3. Фиксируем первый коммит
-git commit -m "Initial commit: AutoTagger RYM"
-
-# 4. Переименовываем основную ветку в main
-git branch -M main
-
-# 5. Привязываем ваш удаленный репозиторий (замените YOUR_USERNAME и YOUR_REPO на свои!)
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
-
-# 6. Отправляем проект на GitHub
-git push -u origin main
-```
-
-> [!TIP]
-> При последующих обновлениях проекта достаточно двух команд:
-> ```bash
-> git add .
-> git commit -m "Описание внесенных изменений"
-> git push
-> ```
 
 ---
 
@@ -334,42 +291,6 @@ python main.py -y "D:\Music\Album1" "D:\Music\Album2"
 
 # Launch GUI with preloaded folders:
 python main.py --gui "D:\Music\Album1"
-```
-
----
-
-### 📤 Guide: How to Push this Project to GitHub
-
-To upload this project to your own GitHub repository:
-
-#### Step 1: Create a Repository on GitHub
-1. Open [github.com/new](https://github.com/new).
-2. Enter a repository name (e.g., `autotagger` or `autotagger-rym`).
-3. Select **Public** or **Private**.
-4. **Important:** Leave "Add a README file", "Add .gitignore", and "Choose a license" **unchecked** (they are already set up in this repository).
-5. Click **Create repository**.
-
-#### Step 2: Push Your Local Files
-Open PowerShell or Command Prompt in the project folder (`d:\DESKTOP\autotagger`) and run:
-
-```bash
-# 1. Initialize local git repository
-git init
-
-# 2. Stage all project files (cache and temp files are excluded via .gitignore)
-git add .
-
-# 3. Commit the files
-git commit -m "Initial commit: AutoTagger RYM"
-
-# 4. Set main branch
-git branch -M main
-
-# 5. Link your GitHub remote repository (replace with your username and repo name!)
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
-
-# 6. Push to GitHub
-git push -u origin main
 ```
 
 ---
