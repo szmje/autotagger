@@ -1,9 +1,9 @@
 # AutoTagger RYM 🎵
 
 <p align="center">
-  <b>Универсальный музыкальный автотеггер с поддержкой жанров RateYourMusic, Discogs, базы MusicBrainz, синхронизированных текстов (.lrc) и стандартов MusicBee.</b>
+  <b>Музыкальный теггер с упором на микрожанры RateYourMusic/Discogs, базу MusicBrainz, синхронизированные тексты (.lrc) и стандарты MusicBee.</b>
   <br />
-  <i>Universal music auto-tagger with RateYourMusic & Discogs genres, MusicBrainz metadata, synced karaoke lyrics (.lrc), and full MusicBee compatibility.</i>
+  <i>Music tagger focused on RateYourMusic & Discogs subgenres, MusicBrainz metadata, synced lyrics (.lrc), and clean MusicBee library standards.</i>
 </p>
 
 <p align="center">
@@ -24,242 +24,306 @@
 
 ## 🇷🇺 Русский
 
-**AutoTagger RYM** — мощный инструмент с графическим интерфейсом (GUI) и командной строкой (CLI) для идеального наведения порядка в музыкальной коллекции. Программа автоматически определяет альбомы, загружает официальные метаданные из **MusicBrainz** и **Discogs**, подтягивает нишевые жанры и стили с **RateYourMusic (RYM)**, скачивает синхронизированные караоке-тексты песен (`.lrc`), сохраняет и вшивает обложки высокого разрешения, переименовывает аудиофайлы по выбранному шаблону и гарантирует 100% совместимость с аудиоплеерами (**MusicBee**, **foobar2000**, **AIMP**, мобильные плееры).
+**AutoTagger RYM** — утилита с GUI и CLI для нормального тегирования музыкальной библиотеки. Подтягивает официальные метаданные из **MusicBrainz** и **Discogs**, цепляет специфичные жанры с **RateYourMusic (RYM)**, качает тайминги караоке-текстов (`.lrc`), вшивает обложки в хайрезе, чистит мусор из тегов и правильно раскладывает мультидисковые релизы под стандарты **MusicBee** и **foobar2000**.
 
 ---
 
-### ✨ Ключевые возможности
+### Основные фичи
 
-#### 1. 🏷️ Жанры с RateYourMusic и Discogs (на выбор)
-- Автоматически находит альбом на **RateYourMusic** и **Discogs**.
-- Доступен гибкий переключатель источника жанров в GUI:
-  - 🔘 **RateYourMusic**: знаменитые специфичные микрожанры с RYM (например, `cloud rap; drain; ambient pop`).
-  - 🔘 **Discogs**: полные стили и жанровые категории конкретного издания.
-  - 🔘 **Объединить оба**: комбинирует теги из обеих баз без дубликатов.
-- Жанры записываются **строго в нижнем регистре (lowercase)** и разделяются точкой с запятой и пробелом:
+#### 1. Жанры с RYM и Discogs
+- Парсит релиз с **RateYourMusic** и **Discogs**.
+- Переключатель источника в GUI:
+  - **RateYourMusic**: нишевые микрожанры (например, `cloud rap; drain; ambient pop`).
+  - **Discogs**: стандартные стили и категории конкретного пресса.
+  - **Объединить**: склеивает оба источника без дублей.
+- Запись строго в **нижнем регистре (lowercase)** через точку с запятой и пробел:
   ```text
   alternative rock; post-punk; dream pop
-  ```
-- Поля ввода с возможностью быстрого ручного редактирования перед записью, а также кнопки **«🌐 Обновить RYM»** и **«💿 Обновить Discogs»**.
 
-#### 2. 👥 Идеальное форматирование совместных артистов (`; `)
-- Если у альбома или трека несколько исполнителей, они автоматически форматируются через точку с запятой:
-  ```text
-  bladee; ecco2k
-  yung lean; bladee
-  ```
-- Любые коллаборации (`&`, `feat.`, `ft.`, `with`, `/`, `,`) приводятся к строгому музыкальному стандарту `; `, что обеспечивает корректное разделение исполнителей в библиотеках **MusicBee**, **foobar2000**, **Navidrome** и **Plex**.
+```
 
-#### 3. 🔍 Поиск по базам и вставка прямых ссылок
-- Если альбом редкий или не распознался автоматически:
-  - Вставьте прямую ссылку на страницу релиза:
-    - **RateYourMusic**: `https://rateyourmusic.com/release/album/...`
-    - **Discogs**: `https://www.discogs.com/release/...` или `/master/...`
-    - **MusicBrainz**: `https://musicbrainz.org/release/...`
-  - **Универсальная вставка (RU / EN)**: горячие клавиши `Ctrl+V`, `Ctrl+C`, `Ctrl+X`, `Ctrl+A` работают на любой раскладке клавиатуры (русской или английской). Также доступны кнопка **«📋 Вставить»** и контекстное меню правой кнопки мыши (ПКМ).
-  - Диалоговое окно **«🔍 Найти альбом в базах...»** для ручного поиска сразу по всем источникам с мгновенным применением к выбранной папке.
+* Возможность руками поправить жанры прямо в поле перед сохранением + кнопки обновления.
 
-#### 4. 🎛️ Чекбоксы выборочной записи тегов
-- Рядом с каждым полем метаданных есть независимый чекбокс:
-  - `Исполнитель(и) альбома`
-  - `Название альбома`
-  - `Год релиза`
-  - `Жанры (Genre)`
-  - `Названия треков (Title)`
-  - `Номера треков (Track №)`
-  - `Вшивание обложки`
-  - `Тексты песен (LRC)`
-- Быстрые кнопки **«✓ Все»** и **«✗ Снять»**.
-- Если снять галочку с поля, существующий тег в файле **не перезаписывается и остаётся нетронутым** (идеально, если у вас уже есть свои кастомные теги).
+#### 2. Нормальный сплит артистов (`; `)
 
-#### 5. 💿 Полная поддержка Multi-Disc релизов (MusicBee Friendly)
-- Автоматически распознаёт многодисковые релизы (2 CD, 3 CD, винилы Side A/B/C/D, DJ-миксы со сложными sub-tracks) из баз данных или структуры папок (`CD1/`, `CD2/`, `Disc 1/`, `Disc 2/`).
-- Объединяет треки в единый альбом со сквозным правильным порядком.
-- **Строгий стандарт MusicBee**:
-  - В тег номера трека (`TRCK` / `tracknumber`) записывается **только порядковый номер трека** (`01`, `02`, `10`).
-  - Номер диска пишется **строго отдельно** в тег диска (`TPOS` / `DISCNUMBER` = `01/02`, `02/02`).
-  - Это исключает ошибки группировки и сохраняет гибкость настройки масок в MusicBee.
-- Опция **«Формат 01-05 (Disc-Track) в именах файлов»** позволяет при желании переименовывать сами файлы на диске как `02-01. Artist - Title.mp3`.
+* Все совместные треки и релизы приводятся к единому стандарту через `; `:
+```text
+bladee; ecco2k
+yung lean; bladee
 
-#### 6. ✏️ Переименование файлов и папок
-- Предустановленные шаблоны:
-  - `01. Artist - Title` (например, `01. bladee - obedient.mp3`)
-  - `01. Title`
-  - `01 - Artist - Title`
-  - `01 - Title`
-  - `01-05. Artist - Title` (для мультидисковых релизов)
-  - `01-05. Title`
-  - `Artist - Title`
-- Столбец предпросмотра нового имени в реальном времени.
-- Автоматическая безопасная замена недопустимых символов файловой системы Windows (`/ \ : * ? " < > |`).
-- Кнопка «📁 Папку» для переименования директории альбома в `Исполнитель - Альбом (Год)`.
+```
 
-#### 7. 🎤 Синхронизированные тексты песен (LRC + караоке)
-- Поиск построчных синхронизированных таймкодов караоке через базу `syncedlyrics` (Musixmatch, Deezer, NetEase и др.).
-- Автоматическое создание файла `.lrc` рядом с треком (`01. bladee - obedient.lrc`).
-- Вшивание текста внутрь аудиофайла (ID3 `USLT`, FLAC `LYRICS`, MP4 `©lyr`).
-- Синхронное автоматическое переименование `.lrc` при переименовании аудиофайла.
 
-#### 8. 🖼️ Обложки альбомов в высоком разрешении
-- Поиск оригинального арта высокого разрешения (до 1200x1200) на Deezer, Discogs, iTunes.
-- Сохранение `cover.jpg` в папку с релизом.
-- Вшивание обложки внутрь треков (ID3 APIC, FLAC Picture, MP4 Cover).
+* Автоматически разбивает коллаборации (`&`, `feat.`, `ft.`, `with`, `/`, `,`), чтобы плееры вроде **MusicBee**, **foobar2000**, **Navidrome** или **Plex** видели каждого исполнителя отдельно, а не создавали кашу.
 
-#### 9. 🧹 Очистка мусорных тегов и рекламы
-- Удаляет спам-комментарии трекеров, рекламу каналов Telegram, ссылки на сайты и баннеры (`COMM`, `WXXX`, `WCOM`, `TENC`, `COMMENT`, `DESCRIPTION`, `URL`, `©cmt`).
+#### 3. Поиск и вставка прямых ссылок
 
-#### 10. 🌐 Двуязычный интерфейс (RU / EN в 1 клик)
-- Кнопка переключения языка расположена в верхней панели управления (справа от «Очистить»).
-- Мгновенное переключение всего интерфейса, кнопок, подсказок, чекбоксов, таблиц и всплывающих окон между **Русским** и **English** без перезапуска приложения.
+* Если релиз редкий или не определился автоматом, можно просто кинуть прямую ссылку:
+* **RateYourMusic**: `https://rateyourmusic.com/release/album/...`
+* **Discogs**: `https://www.discogs.com/release/...` или `/master/...`
+* **MusicBrainz**: `https://musicbrainz.org/release/...`
 
-#### 11. 🎼 Поддерживаемые форматы аудио
-- **MP3** (`.mp3` — ID3v2.3 / ID3v2.4)
-- **FLAC** (`.flac` — Vorbis Comments)
-- **M4A / ALAC / AAC** (`.m4a`, `.mp4`)
-- **OGG Vorbis / OPUS** (`.ogg`, `.opus`)
-- **WAV / AIFF** (`.wav`, `.aiff`)
+
+* Хоткеи `Ctrl+V`, `Ctrl+C`, `Ctrl+X`, `Ctrl+A` работают на любой раскладке (RU/EN), плюс есть кнопка вставки и контекстное меню по ПКМ.
+* Ручной поиск сразу по всем базам через диалоговое окно с выбором нужного издания.
+
+#### 4. Выборочная запись тегов
+
+* У каждого поля свой независимый чекбокс:
+* `Исполнитель(и) альбома`
+* `Название альбома`
+* `Год релиза`
+* `Жанры (Genre)`
+* `Названия треков (Title)`
+* `Номера треков (Track №)`
+* `Обложка`
+* `Тексты песен (LRC)`
+
+
+* Снятые поля **вообще не перезаписываются**, существующие кастомные теги в файлах остаются нетронутыми.
+
+#### 5. Честная поддержка Multi-Disc (MusicBee Standard)
+
+* Подхватывает многодисковые издания (2 CD, 3 CD, винилы Side A/B/C/D) из баз или структуры папок (`CD1/`, `CD2/`, `Disc 1/` и т.д.).
+* Логика тегов строго под MusicBee:
+* В тег номера трека (`TRCK` / `tracknumber`) пишется **только номер трека** (`01`, `02`, `10`).
+* Номер диска пишется **отдельно** (`TPOS` / `DISCNUMBER` = `01/02`, `02/02`). Никаких склеек в духе `101`, `102` в номер трека.
+
+
+* Есть тумблер для переименования самих файлов в структуру вида `02-01. Artist - Title.mp3`.
+
+#### 6. Переименование файлов и папок
+
+* Пресеты масок:
+* `01. Artist - Title` (например, `01. bladee - obedient.mp3`)
+* `01. Title`
+* `01 - Artist - Title`
+* `01 - Title`
+* `01-05. Artist - Title` (для мультидисков)
+* `01-05. Title`
+* `Artist - Title`
+
+
+* Предпросмотр итоговых имен в реальном времени.
+* Автоматическая зачистка запрещенных символов Windows (`/ \ : * ? " < > |`).
+* Кнопка «📁 Папку» для быстрого переименования каталога в `Artist - Album (Year)`.
+
+#### 7. Синхронизированные тексты (.lrc + караоке)
+
+* Подтягивает построчные таймкоды через базу `syncedlyrics` (Musixmatch, Deezer, NetEase и др.).
+* Создает файл `.lrc` рядом с треком (`01. bladee - obedient.lrc`) и параллельно вшивает текст внутрь файла (ID3 `USLT`, FLAC `LYRICS`, MP4 `©lyr`).
+* Автоматически синхронизирует имя `.lrc` при переименовании аудиофайла.
+
+#### 8. Обложки в высоком разрешении
+
+* Качает оригинальные каверы до 1200x1200 (Deezer, Discogs, iTunes).
+* Складывает `cover.jpg` в папку и вшивает в теги (APIC / Vorbis Picture / MP4 Cover).
+
+#### 9. Вычистка мусора
+
+* Сносит рекламные комментарии релизеров, спам трекеров, линки на Telegram-каналы и сайты из тегов (`COMM`, `WXXX`, `WCOM`, `TENC`, `COMMENT`, `DESCRIPTION`, `URL`, `©cmt`).
+
+#### 10. Переключение RU / EN
+
+* Кнопка смены языка вынесена на верхнюю панель. Переключает интерфейс и подсказки на лету без перезапуска.
+
+#### 11. Поддерживаемые форматы
+
+* **MP3** (`.mp3` — ID3v2.3 / ID3v2.4)
+* **FLAC** (`.flac` — Vorbis Comments)
+* **M4A / ALAC / AAC** (`.m4a`, `.mp4`)
+* **OGG / OPUS** (`.ogg`, `.opus`)
+* **WAV / AIFF** (`.wav`, `.aiff`)
 
 ---
 
-### 🚀 Быстрый старт
+### Установка и запуск
 
-#### Установка зависимостей
-Убедитесь, что у вас установлен **Python 3.9+**.
+#### Клонирование и зависимости
+
+Нужен **Python 3.9+**.
+
 ```bash
-git clone https://github.com/your-repo/autotagger.git
+git clone [https://github.com/szmje/autotagger.git](https://github.com/szmje/autotagger.git)
 cd autotagger
 pip install -r requirements.txt
+
 ```
 
-#### Запуск графического интерфейса (GUI)
-Дважды кликните по файлу:
+#### Запуск GUI
+
+На Windows достаточно кликнуть:
+
 ```text
 Run_GUI.bat
+
 ```
-В открывшемся окне:
-1. Перетащите папку с альбомом или аудиофайлы из Проводника прямо в окно программы (или нажмите **📁 Выбрать папку...**).
-2. Проверьте предпросмотр метаданных, при желании выберите чекбоксы тегов и источник жанров.
-3. Нажмите кнопку **▶️ ПРИМЕНИТЬ И ЗАПИСАТЬ ТЕГИ**.
+
+Либо через консоль:
+
+```bash
+python main.py
+
+```
+
+Как пользоваться:
+
+1. Перетаскиваешь папку с альбомом или файлы напрямую в окно (или жмешь **📁 Выбрать папку...**).
+2. Чекнул предпросмотр, выбрал источник жанров и нужные чекбоксы тегов.
+3. Жмешь **▶️ ПРИМЕНИТЬ И ЗАПИСАТЬ ТЕГИ**.
 
 ---
 
 ## 🇬🇧 English
 
-**AutoTagger RYM** is a comprehensive, modern music tagging application (GUI & CLI) designed to organize your music library to perfection. It retrieves verified official metadata from **MusicBrainz** and **Discogs**, fetches niche and descriptive subgenres from **RateYourMusic (RYM)**, downloads synchronized karaoke lyrics (`.lrc`), embeds high-resolution cover artwork, renames audio files according to customizable templates, and ensures flawless compatibility with audiophile players (**MusicBee**, **foobar2000**, **AIMP**, and mobile music players).
+**AutoTagger RYM** is a clean GUI/CLI utility designed to tag music libraries properly. It fetches verified metadata from **MusicBrainz** and **Discogs**, scrapes niche subgenres from **RateYourMusic (RYM)**, pulls synchronized karaoke lyrics (`.lrc`), embeds high-res covers, cleans promotional junk tags, and handles multi-disc releases according to **MusicBee** and **foobar2000** standards.
 
 ---
 
-### ✨ Key Features
+### Key Features
 
-#### 1. 🏷️ RateYourMusic & Discogs Genres (Selectable Source)
-- Automatically matches albums against **RateYourMusic** and **Discogs**.
-- Flexible genre source selector:
-  - 🔘 **RateYourMusic**: distinctive subgenres from RYM (e.g., `cloud rap; drain; ambient pop`).
-  - 🔘 **Discogs**: full styles and release genre classifications from Discogs.
-  - 🔘 **Merge Both**: combines genres from both databases with automatic deduplication.
-- Genres are saved **strictly in lowercase**, separated by a semicolon and space:
-  ```text
-  alternative rock; post-punk; dream pop
-  ```
-- Editable entry fields with dedicated **"🌐 Refresh RYM"** and **"💿 Refresh Discogs"** buttons.
+#### 1. RateYourMusic & Discogs Genres
 
-#### 2. 👥 Proper Multi-Artist Formatting (`; `)
-- Releases and tracks with multiple artists are consistently formatted using `; `:
-  ```text
-  bladee; ecco2k
-  yung lean; bladee
-  ```
-- Any joint conjunctions (`&`, `feat.`, `ft.`, `with`, `/`, `,`) are automatically normalized into clean semicolon-separated artists. This ensures seamless multi-artist splitting in **MusicBee**, **foobar2000**, **Navidrome**, and **Plex**.
+* Scrapes release data from both **RateYourMusic** and **Discogs**.
+* Source selector:
+* **RateYourMusic**: specific niche subgenres (e.g., `cloud rap; drain; ambient pop`).
+* **Discogs**: official master/release style classifications.
+* **Merge Both**: merges tags from both platforms without duplicates.
 
-#### 3. 🔍 Direct Database Search & URL Resolver
-- For rare, unlisted, or ambiguous albums:
-  - Paste a direct link into the URL bar:
-    - **RateYourMusic**: `https://rateyourmusic.com/release/album/...`
-    - **Discogs**: `https://www.discogs.com/release/...` or `/master/...`
-    - **MusicBrainz**: `https://musicbrainz.org/release/...`
-  - **Layout-Independent Shortcuts**: `Ctrl+V`, `Ctrl+C`, `Ctrl+X`, and `Ctrl+A` work flawlessly regardless of whether your keyboard is set to Russian, English, or any other layout. Includes a dedicated **"📋 Paste"** button and right-click context menu.
-  - Built-in **"🔍 Search Album in DBs..."** dialog to search across all databases and apply any release in a single click.
 
-#### 4. 🎛️ Selective Tagging Checkboxes
-- Individual toggles for every tag category:
-  - `Album Artist(s)`
-  - `Album Title`
-  - `Release Year`
-  - `Genre`
-  - `Track Titles`
-  - `Track Numbers`
-  - `Embed Cover`
-  - `Lyrics (LRC)`
-- Quick action buttons: **"✓ All"** and **"✗ None"**.
-- Unchecked tags are **left completely untouched** in your audio files (ideal if you already have custom personal tags).
+* All genres are strictly normalized to **lowercase** and separated by `; `:
+```text
+alternative rock; post-punk; dream pop
 
-#### 5. 💿 Native Multi-Disc Support (MusicBee Compliant)
-- Automatically groups multi-disc releases (2 CD, 3 CD, vinyl Sides A/B/C/D, DJ mixes with nested subtracks) from database metadata or folder structure (`CD1/`, `CD2/`, `Disc 1/`, etc.).
-- Continuous sequential sorting and track pairing.
-- **Strict MusicBee Tagging Standard**:
-  - The track number tag (`TRCK` / `tracknumber`) stores **only the track number** (`01`, `02`, `10`).
-  - The disc number is written **separately** (`TPOS` / `DISCNUMBER` = `01/02`, `02/02`).
-  - This prevents tag corruption and keeps MusicBee's custom sorting rules intact.
-- Optional **"Use 01-05 (Disc-Track) in filenames"** toggle allows naming physical files as `02-01. Artist - Title.mp3` when desired.
+```
 
-#### 6. ✏️ Flexible File & Folder Renaming
-- Built-in filename templates:
-  - `01. Artist - Title` (e.g., `01. bladee - obedient.mp3`)
-  - `01. Title`
-  - `01 - Artist - Title`
-  - `01 - Title`
-  - `01-05. Artist - Title` (for multi-disc releases)
-  - `01-05. Title`
-  - `Artist - Title`
-- Real-time preview column in the tracklist tree.
-- Automatic sanitation of Windows-reserved characters (`/ \ : * ? " < > |`).
-- Dedicated "📁 Folder" button to rename album directories into `Artist - Album (Year)`.
 
-#### 7. 🎤 Synchronized Karaoke Lyrics (.lrc)
-- Automatically retrieves synchronized timestamped lyrics via `syncedlyrics` (Musixmatch, Deezer, NetEase, etc.).
-- Generates external `.lrc` files alongside your tracks (`01. bladee - obedient.lrc`).
-- Embeds lyrics into audio tags (ID3 `USLT`, FLAC `LYRICS`, MP4 `©lyr`).
-- Automatically renames associated `.lrc` files whenever audio files are renamed.
+* Editable tag box prior to writing, plus quick refresh buttons.
 
-#### 8. 🖼️ High-Resolution Cover Art
-- Downloads official artwork in up to 1200x1200 resolution from Deezer, Discogs, or iTunes.
-- Saves `cover.jpg` directly into the album directory.
-- Embeds the cover image into track tags (ID3 APIC, FLAC Picture, MP4 Cover).
+#### 2. Clean Multi-Artist Splitting (`; `)
 
-#### 9. 🧹 Junk & Tracker Ad Cleaner
-- Strips junk tags, torrent tracker comments, Telegram channel ads, and promotional URLs (`COMM`, `WXXX`, `WCOM`, `TENC`, `COMMENT`, `DESCRIPTION`, `URL`, `©cmt`).
+* Joint tracks and features are formatted strictly using `; `:
+```text
+bladee; ecco2k
+yung lean; bladee
 
-#### 10. 🌐 Instant Bilingual GUI (RU / EN Toggle)
-- Language switch button located on the top toolbar (directly next to "Clear").
-- Instant switching between **Русский** and **English** for all labels, buttons, headers, dialogs, and messages without needing an application restart.
+```
 
-#### 11. 🎼 Supported Audio Formats
-- **MP3** (`.mp3` — ID3v2.3 / ID3v2.4)
-- **FLAC** (`.flac` — Vorbis Comments)
-- **M4A / ALAC / AAC** (`.m4a`, `.mp4`)
-- **OGG Vorbis / OPUS** (`.ogg`, `.opus`)
-- **WAV / AIFF** (`.wav`, `.aiff`)
+
+* Normalizes all conjunction variants (`&`, `feat.`, `ft.`, `with`, `/`, `,`) so players like **MusicBee**, **foobar2000**, **Navidrome**, and **Plex** properly index each artist separately.
+
+#### 3. Direct URL Resolving & Fast Search
+
+* Paste URLs directly when dealing with obscure editions:
+* **RateYourMusic**: `https://rateyourmusic.com/release/album/...`
+* **Discogs**: `https://www.discogs.com/release/...` or `/master/...`
+* **MusicBrainz**: `https://musicbrainz.org/release/...`
+
+
+* Shortcuts (`Ctrl+V`, `Ctrl+C`, `Ctrl+X`, `Ctrl+A`) work regardless of active keyboard layout.
+* Cross-database search window to quickly look up releases without opening a browser.
+
+#### 4. Selective Tagging
+
+* Independent toggles for each metadata category:
+* `Album Artist(s)`
+* `Album Title`
+* `Year`
+* `Genres`
+* `Track Titles`
+* `Track Numbers`
+* `Cover Art`
+* `Lyrics (LRC)`
+
+
+* Unchecked fields are **ignored completely**, leaving your existing tags untouched.
+
+#### 5. Proper Multi-Disc Handling (MusicBee Compliant)
+
+* Auto-detects multi-disc releases (2 CD, 3 CD, vinyl Sides A/B/C/D) via metadata or folder layouts (`CD1/`, `CD2/`, `Disc 1/`, etc.).
+* Follows the clean MusicBee tagging standard:
+* `TRCK` / `tracknumber` stores **only the sequential track index** (`01`, `02`, `10`).
+* Disc number goes strictly into `TPOS` / `DISCNUMBER` (`01/02`, `02/02`).
+
+
+* Optional file renaming mask: `02-01. Artist - Title.mp3`.
+
+#### 6. File & Folder Renamer
+
+* Preset templates:
+* `01. Artist - Title` (e.g., `01. bladee - obedient.mp3`)
+* `01. Title`
+* `01 - Artist - Title`
+* `01 - Title`
+* `01-05. Artist - Title` (multi-disc)
+* `01-05. Title`
+* `Artist - Title`
+
+
+* Real-time filename preview column.
+* Automatically strips invalid OS characters (`/ \ : * ? " < > |`).
+* Single-click folder renaming to `Artist - Album (Year)`.
+
+#### 7. Synced Lyrics (.lrc)
+
+* Fetches timestamped lyrics via `syncedlyrics` (Musixmatch, Deezer, NetEase, etc.).
+* Saves external `.lrc` files next to audio files and embeds synchronized lyrics tags (ID3 `USLT`, FLAC `LYRICS`, MP4 `©lyr`).
+* Automatically syncs `.lrc` file names during track renaming.
+
+#### 8. High-Res Artwork
+
+* Downloads official artwork up to 1200x1200px (Deezer, Discogs, iTunes).
+* Saves `cover.jpg` in the album directory and embeds it directly into audio files.
+
+#### 9. Tag Cleaner
+
+* Cleans spam comments, torrent tracker URLs, Telegram promotion tags, and encoder notes (`COMM`, `WXXX`, `WCOM`, `TENC`, `COMMENT`, `DESCRIPTION`, `URL`, `©cmt`).
+
+#### 10. Instant RU / EN Toggle
+
+* Real-time language switch directly from the top toolbar without app restarts.
+
+#### 11. Audio Formats
+
+* **MP3** (`.mp3` — ID3v2.3 / ID3v2.4)
+* **FLAC** (`.flac` — Vorbis Comments)
+* **M4A / ALAC / AAC** (`.m4a`, `.mp4`)
+* **OGG / OPUS** (`.ogg`, `.opus`)
+* **WAV / AIFF** (`.wav`, `.aiff`)
 
 ---
 
-### 🚀 Quick Start
+### Installation & Usage
 
-#### Requirements & Installation
-Make sure you have **Python 3.9+** installed.
+#### Setup
+
+Requires **Python 3.9+**.
+
 ```bash
-git clone https://github.com/your-repo/autotagger.git
+git clone [https://github.com/szmje/autotagger.git](https://github.com/szmje/autotagger.git)
 cd autotagger
 pip install -r requirements.txt
+
 ```
 
-#### Launching the Graphical User Interface (GUI)
-Double-click:
+#### Running GUI
+
+On Windows:
+
 ```text
 Run_GUI.bat
+
 ```
-Inside the application window:
-1. Drag and drop your album folder or audio files directly into the window (or click **📁 Choose Folder...**).
-2. Inspect the metadata preview, select tags to write, and choose your preferred genre source.
+
+Or via terminal:
+
+```bash
+python main.py
+
+```
+
+1. Drag and drop your album folder or audio files into the window (or click **📁 Choose Folder...**).
+2. Review metadata preview, pick the genre source, and select tags to write.
 3. Click **▶️ APPLY & WRITE TAGS**.
 
 ---
@@ -287,6 +351,7 @@ autotagger/
 │   ├── searcher.py         # Multi-database unified searcher
 │   └── url_resolver.py     # URL parser for RYM, Discogs, and MusicBrainz
 └── scratch/                # Unit tests and verification scripts
+
 ```
 
 ---
@@ -294,3 +359,5 @@ autotagger/
 ## 📄 License
 
 Distributed under the **MIT License**. See `LICENSE` for more information.
+
+```
