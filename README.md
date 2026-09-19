@@ -141,22 +141,6 @@ Run_GUI.bat
 2. Проверьте предпросмотр метаданных, при желании выберите чекбоксы тегов и источник жанров.
 3. Нажмите кнопку **▶️ ПРИМЕНИТЬ И ЗАПИСАТЬ ТЕГИ**.
 
-#### Использование в командной строке (CLI)
-```bash
-# Тегировать одну папку с подтверждением:
-python main.py "D:\Music\bladee; yung lean - psykos (2024)"
-
-# Тегировать альбом по прямой ссылке (Discogs, RYM или MusicBrainz):
-python main.py --url "https://rateyourmusic.com/release/album/bladee-yung-lean/psykos/" "D:\Music\psykos"
-
-# Автоматический пакетный режим (-y):
-python main.py -y "D:\Music\Album1" "D:\Music\Album2"
-
-# Открыть GUI с предзагруженными папками:
-python main.py --gui "D:\Music\Album1"
-```
-
-
 ---
 
 ## 🇬🇧 English
@@ -277,21 +261,6 @@ Inside the application window:
 1. Drag and drop your album folder or audio files directly into the window (or click **📁 Choose Folder...**).
 2. Inspect the metadata preview, select tags to write, and choose your preferred genre source.
 3. Click **▶️ APPLY & WRITE TAGS**.
-
-#### CLI Usage
-```bash
-# Tag a single folder interactively:
-python main.py "D:\Music\bladee; yung lean - psykos (2024)"
-
-# Tag via a direct release URL:
-python main.py --url "https://rateyourmusic.com/release/album/bladee-yung-lean/psykos/" "D:\Music\psykos"
-
-# Non-interactive batch mode (-y):
-python main.py -y "D:\Music\Album1" "D:\Music\Album2"
-
-# Launch GUI with preloaded folders:
-python main.py --gui "D:\Music\Album1"
-```
 
 ---
 
