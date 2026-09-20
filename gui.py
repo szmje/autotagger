@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import threading
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
@@ -20,6 +21,28 @@ from tagger.scanner import AudioScanner
 from tagger.audio import AudioTagEngine
 from tagger.url_resolver import AlbumURLResolver
 from tagger.searcher import UnifiedAlbumSearcher
+
+CONFIG_PATH = Path(__file__).resolve().parent / "config.json"
+
+DEFAULT_CONFIG = {
+    "language": "ru",
+    "write_artist": True,
+    "write_album": True,
+    "write_year": True,
+    "write_genre": True,
+    "genre_source": "rym",
+    "write_title": True,
+    "write_track_num": True,
+    "embed_cover": True,
+    "save_cover": True,
+    "clean_junk": True,
+    "fetch_lyrics": True,
+    "save_lrc": True,
+    "lower_artist": False,
+    "rename_files": True,
+    "multi_disc_format": True,
+    "rename_pattern": "01. Artist - Title"
+}
 
 STRINGS: Dict[str, Dict[str, str]] = {
     "ru": {
@@ -225,10 +248,12 @@ STRINGS: Dict[str, Dict[str, str]] = {
 class AutoTaggerGUI:
     def __init__(self, root: tk.Tk, initial_paths: Optional[List[str]] = None):
         self.root = root
-        self.lang = "ru"
+        self.config_data = self.load_config()
+        self.lang = self.config_data.get("language", "ru")
         self.root.title(self.tr("title"))
         self.root.geometry("1150x800")
         self.root.minsize(950, 650)
+        self.root.protocol("WM_DELETE_WINDOW", self._on_window_close)
 
         # Style configuration
         self.style = ttk.Style()
@@ -262,6 +287,48 @@ class AutoTaggerGUI:
         if initial_paths:
             self.root.after(100, lambda: self.load_paths(initial_paths))
 
+    def load_config(self) -> dict:
+        config = dict(DEFAULT_CONFIG)
+        if CONFIG_PATH.exists():
+            try:
+                with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+                    saved = json.load(f)
+                    if isinstance(saved, dict):
+                        config.update(saved)
+            except Exception as e:
+                print(f"Error loading config.json: {e}")
+        return config
+
+    def save_config(self):
+        try:
+            config = {
+                "language": getattr(self, "lang", "ru"),
+                "write_artist": self.write_artist_var.get() if hasattr(self, 'write_artist_var') else True,
+                "write_album": self.write_album_var.get() if hasattr(self, 'write_album_var') else True,
+                "write_year": self.write_year_var.get() if hasattr(self, 'write_year_var') else True,
+                "write_genre": self.write_genre_var.get() if hasattr(self, 'write_genre_var') else True,
+                "genre_source": self.genre_source_var.get() if hasattr(self, 'genre_source_var') else "rym",
+                "write_title": self.write_title_var.get() if hasattr(self, 'write_title_var') else True,
+                "write_track_num": self.write_track_num_var.get() if hasattr(self, 'write_track_num_var') else True,
+                "embed_cover": self.embed_cover_var.get() if hasattr(self, 'embed_cover_var') else True,
+                "save_cover": self.save_cover_var.get() if hasattr(self, 'save_cover_var') else True,
+                "clean_junk": self.clean_junk_var.get() if hasattr(self, 'clean_junk_var') else True,
+                "fetch_lyrics": self.fetch_lyrics_var.get() if hasattr(self, 'fetch_lyrics_var') else True,
+                "save_lrc": self.save_lrc_var.get() if hasattr(self, 'save_lrc_var') else True,
+                "lower_artist": self.lower_artist_var.get() if hasattr(self, 'lower_artist_var') else False,
+                "rename_files": self.rename_files_var.get() if hasattr(self, 'rename_files_var') else True,
+                "multi_disc_format": self.multi_disc_format_var.get() if hasattr(self, 'multi_disc_format_var') else True,
+                "rename_pattern": self.pattern_combo.get() if hasattr(self, 'pattern_combo') else "01. Artist - Title"
+            }
+            with open(CONFIG_PATH, "w", encoding="utf-8") as f:
+                json.dump(config, f, indent=4, ensure_ascii=False)
+        except Exception as e:
+            print(f"Error saving config.json: {e}")
+
+    def _on_window_close(self):
+        self.save_config()
+        self.root.destroy()
+
     def tr(self, key: str, **kwargs) -> str:
         lang_dict = STRINGS.get(self.lang, STRINGS["ru"])
         raw = lang_dict.get(key, STRINGS["ru"].get(key, key))
@@ -275,6 +342,7 @@ class AutoTaggerGUI:
     def toggle_language(self):
         self.lang = "en" if self.lang == "ru" else "ru"
         self._apply_language()
+        self.save_config()
 
     def _apply_language(self):
         self.root.title(self.tr("title"))
@@ -389,13 +457,98 @@ class AutoTaggerGUI:
 
         self.refresh_treeview_preview()
 
+    def _on_widget_control_key(self, event):
+        """
+        Widget-level handler for Ctrl+V, Ctrl+C, Ctrl+X, Ctrl+A.
+        Binding at the widget level runs BEFORE Tkinter's class bindings,
+        so returning 'break' prevents Tkinter from executing its default
+        class binding, completely eliminating duplicate paste/cut on English layouts
+        while properly handling Russian/non-Latin layouts.
+        """
+        is_ctrl = bool(event.state & 4) or bool(event.state & 12) or bool(event.state & 0x20000)
+        if not is_ctrl:
+            return
+
+        widget = event.widget
+        if not isinstance(widget, (tk.Entry, ttk.Entry, tk.Text)):
+            return
+
+        # Paste: VK_V = 86, or keysym in ('v', 'V', 'Cyrillic_em', 'Cyrillic_EM')
+        if event.keycode == 86 or event.keysym in ('v', 'V', 'Cyrillic_em', 'Cyrillic_EM'):
+            try:
+                text = self.root.clipboard_get()
+                if isinstance(widget, (tk.Entry, ttk.Entry)):
+                    try:
+                        widget.delete(tk.SEL_FIRST, tk.SEL_LAST)
+                    except tk.TclError:
+                        pass
+                    widget.insert(tk.INSERT, text)
+                    return "break"
+                elif isinstance(widget, tk.Text):
+                    try:
+                        widget.delete(tk.SEL_FIRST, tk.SEL_LAST)
+                    except tk.TclError:
+                        pass
+                    widget.insert(tk.INSERT, text)
+                    return "break"
+            except Exception:
+                pass
+            return "break"
+
+        # Copy: VK_C = 67, or keysym in ('c', 'C', 'Cyrillic_es', 'Cyrillic_ES')
+        elif event.keycode == 67 or event.keysym in ('c', 'C', 'Cyrillic_es', 'Cyrillic_ES'):
+            try:
+                if isinstance(widget, (tk.Entry, ttk.Entry)):
+                    text = widget.selection_get()
+                elif isinstance(widget, tk.Text):
+                    text = widget.get(tk.SEL_FIRST, tk.SEL_LAST)
+                else:
+                    return
+                self.root.clipboard_clear()
+                self.root.clipboard_append(text)
+                return "break"
+            except Exception:
+                pass
+            return "break"
+
+        # Cut: VK_X = 88, or keysym in ('x', 'X', 'Cyrillic_che', 'Cyrillic_CHE')
+        elif event.keycode == 88 or event.keysym in ('x', 'X', 'Cyrillic_che', 'Cyrillic_CHE'):
+            try:
+                if isinstance(widget, (tk.Entry, ttk.Entry)):
+                    text = widget.selection_get()
+                    widget.delete(tk.SEL_FIRST, tk.SEL_LAST)
+                elif isinstance(widget, tk.Text):
+                    text = widget.get(tk.SEL_FIRST, tk.SEL_LAST)
+                    widget.delete(tk.SEL_FIRST, tk.SEL_LAST)
+                else:
+                    return
+                self.root.clipboard_clear()
+                self.root.clipboard_append(text)
+                return "break"
+            except Exception:
+                pass
+            return "break"
+
+        # Select All: VK_A = 65, or keysym in ('a', 'A', 'Cyrillic_ef', 'Cyrillic_EF')
+        elif event.keycode == 65 or event.keysym in ('a', 'A', 'Cyrillic_ef', 'Cyrillic_EF'):
+            try:
+                if isinstance(widget, (tk.Entry, ttk.Entry)):
+                    widget.selection_range(0, tk.END)
+                    widget.icursor(tk.END)
+                    return "break"
+                elif isinstance(widget, tk.Text):
+                    widget.tag_add(tk.SEL, "1.0", tk.END)
+                    return "break"
+            except Exception:
+                pass
+            return "break"
+
     def _setup_clipboard_helpers(self):
         """
-        Global keypress handler ensuring Ctrl+V, Ctrl+C, Ctrl+X, Ctrl+A work
-        regardless of active keyboard layout (Russian, English, etc.) on Windows.
+        Global keypress fallback ensuring Ctrl+V, Ctrl+C, Ctrl+X, Ctrl+A work
+        for any non-Latin layouts without ever duplicating on English layout.
         """
-        def on_control_key(event):
-            # Check Control modifier
+        def on_control_key_fallback(event):
             is_ctrl = bool(event.state & 4) or bool(event.state & 12) or bool(event.state & 0x20000)
             if not is_ctrl:
                 return
@@ -404,8 +557,8 @@ class AutoTaggerGUI:
             if not isinstance(widget, (tk.Entry, ttk.Entry, tk.Text)):
                 return
 
-            # Paste: VK_V = 86, or keysym in ('v', 'V', 'Cyrillic_em', 'Cyrillic_EM')
-            if event.keycode == 86 or event.keysym in ('v', 'V', 'Cyrillic_em', 'Cyrillic_EM'):
+            # Only fallback for non-Latin layout when keysym is not 'v'/'V'
+            if (event.keycode == 86 or event.keysym in ('Cyrillic_em', 'Cyrillic_EM')) and event.keysym not in ('v', 'V'):
                 try:
                     text = self.root.clipboard_get()
                     if isinstance(widget, (tk.Entry, ttk.Entry)):
@@ -425,8 +578,7 @@ class AutoTaggerGUI:
                 except Exception:
                     pass
 
-            # Copy: VK_C = 67, or keysym in ('c', 'C', 'Cyrillic_es', 'Cyrillic_ES')
-            elif event.keycode == 67 or event.keysym in ('c', 'C', 'Cyrillic_es', 'Cyrillic_ES'):
+            elif (event.keycode == 67 or event.keysym in ('Cyrillic_es', 'Cyrillic_ES')) and event.keysym not in ('c', 'C'):
                 try:
                     if isinstance(widget, (tk.Entry, ttk.Entry)):
                         text = widget.selection_get()
@@ -440,8 +592,7 @@ class AutoTaggerGUI:
                 except Exception:
                     pass
 
-            # Cut: VK_X = 88, or keysym in ('x', 'X', 'Cyrillic_che', 'Cyrillic_CHE')
-            elif event.keycode == 88 or event.keysym in ('x', 'X', 'Cyrillic_che', 'Cyrillic_CHE'):
+            elif (event.keycode == 88 or event.keysym in ('Cyrillic_che', 'Cyrillic_CHE')) and event.keysym not in ('x', 'X'):
                 try:
                     if isinstance(widget, (tk.Entry, ttk.Entry)):
                         text = widget.selection_get()
@@ -457,7 +608,6 @@ class AutoTaggerGUI:
                 except Exception:
                     pass
 
-            # Select All: VK_A = 65, or keysym in ('a', 'A', 'Cyrillic_ef', 'Cyrillic_EF')
             elif event.keycode == 65 or event.keysym in ('a', 'A', 'Cyrillic_ef', 'Cyrillic_EF'):
                 try:
                     if isinstance(widget, (tk.Entry, ttk.Entry)):
@@ -470,10 +620,11 @@ class AutoTaggerGUI:
                 except Exception:
                     pass
 
-        self.root.bind_all("<Control-KeyPress>", on_control_key, add="+")
+        self.root.bind_all("<Control-KeyPress>", on_control_key_fallback, add="+")
 
     def attach_context_menu(self, widget):
-        """Attaches a right-click context menu (Paste, Copy, Cut, Select All) to any text/entry widget."""
+        """Attaches a right-click context menu and widget-level shortcut handler to any text/entry widget."""
+        widget.bind("<Control-KeyPress>", self._on_widget_control_key)
         menu = tk.Menu(widget, tearoff=0)
 
         def do_paste():
@@ -571,6 +722,7 @@ class AutoTaggerGUI:
         self.write_track_num_var.set(state)
         self.embed_cover_var.set(state)
         self._on_tag_toggle()
+        self.save_config()
 
     def _on_tag_toggle(self):
         """Reflects tag checkbox state in entry widgets and table preview."""
@@ -593,6 +745,7 @@ class AutoTaggerGUI:
         if hasattr(self, 'btn_refetch_discogs'):
             self.btn_refetch_discogs.configure(state=g_state)
         self.refresh_treeview_preview()
+        self.save_config()
 
     def get_active_genre_string(self) -> str:
         """Returns the chosen genre string based on the radio button selection (RYM, Discogs, or Merged)."""
@@ -619,7 +772,16 @@ class AutoTaggerGUI:
         return "; ".join(merged)
 
     def _on_genre_source_changed(self):
+        self.save_config()
         self._update_tracks_genre_from_active_choice()
+        self.refresh_treeview_preview()
+
+    def _on_rename_option_changed(self):
+        self.save_config()
+        self.refresh_treeview_preview()
+
+    def _on_pattern_selected(self, event=None):
+        self.save_config()
         self.refresh_treeview_preview()
 
     def _on_genre_text_edited(self):
@@ -743,7 +905,7 @@ class AutoTaggerGUI:
         self.btn_all_tags.pack(side=tk.RIGHT, padx=1)
 
         # 1. Artist
-        self.write_artist_var = tk.BooleanVar(value=True)
+        self.write_artist_var = tk.BooleanVar(value=self.config_data.get("write_artist", True))
         self.chk_artist = ttk.Checkbutton(self.meta_frame, text=self.tr("chk_artist"), variable=self.write_artist_var, command=self._on_tag_toggle)
         self.chk_artist.pack(anchor=tk.W)
         self.artist_entry = ttk.Entry(self.meta_frame, font=("Segoe UI", 9))
@@ -751,7 +913,7 @@ class AutoTaggerGUI:
         self.attach_context_menu(self.artist_entry)
 
         # 2. Album
-        self.write_album_var = tk.BooleanVar(value=True)
+        self.write_album_var = tk.BooleanVar(value=self.config_data.get("write_album", True))
         self.chk_album = ttk.Checkbutton(self.meta_frame, text=self.tr("chk_album"), variable=self.write_album_var, command=self._on_tag_toggle)
         self.chk_album.pack(anchor=tk.W)
         self.album_entry = ttk.Entry(self.meta_frame, font=("Segoe UI", 9))
@@ -759,7 +921,7 @@ class AutoTaggerGUI:
         self.attach_context_menu(self.album_entry)
 
         # 3. Year
-        self.write_year_var = tk.BooleanVar(value=True)
+        self.write_year_var = tk.BooleanVar(value=self.config_data.get("write_year", True))
         self.chk_year = ttk.Checkbutton(self.meta_frame, text=self.tr("chk_year"), variable=self.write_year_var, command=self._on_tag_toggle)
         self.chk_year.pack(anchor=tk.W)
         self.year_entry = ttk.Entry(self.meta_frame, font=("Segoe UI", 9))
@@ -767,8 +929,8 @@ class AutoTaggerGUI:
         self.attach_context_menu(self.year_entry)
 
         # 4. Genre Choice Section (RYM, Discogs, Merged)
-        self.write_genre_var = tk.BooleanVar(value=True)
-        self.genre_source_var = tk.StringVar(value="rym")
+        self.write_genre_var = tk.BooleanVar(value=self.config_data.get("write_genre", True))
+        self.genre_source_var = tk.StringVar(value=self.config_data.get("genre_source", "rym"))
 
         self.genre_box = ttk.LabelFrame(self.meta_frame, text=self.tr("genre_box"), padding="5")
         self.genre_box.pack(fill=tk.X, pady=(2, 4))
@@ -846,35 +1008,35 @@ class AutoTaggerGUI:
         self.opts_frame = ttk.LabelFrame(self.meta_frame, text=self.tr("opts_frame"), padding="6")
         self.opts_frame.pack(fill=tk.X, pady=4)
 
-        self.write_title_var = tk.BooleanVar(value=True)
+        self.write_title_var = tk.BooleanVar(value=self.config_data.get("write_title", True))
         self.chk_title = ttk.Checkbutton(self.opts_frame, text=self.tr("chk_title"), variable=self.write_title_var, command=self._on_tag_toggle)
         self.chk_title.pack(anchor=tk.W)
 
-        self.write_track_num_var = tk.BooleanVar(value=True)
+        self.write_track_num_var = tk.BooleanVar(value=self.config_data.get("write_track_num", True))
         self.chk_track_num = ttk.Checkbutton(self.opts_frame, text=self.tr("chk_track_num"), variable=self.write_track_num_var, command=self._on_tag_toggle)
         self.chk_track_num.pack(anchor=tk.W)
 
-        self.embed_cover_var = tk.BooleanVar(value=True)
-        self.chk_embed_cover = ttk.Checkbutton(self.opts_frame, text=self.tr("chk_embed_cover"), variable=self.embed_cover_var)
+        self.embed_cover_var = tk.BooleanVar(value=self.config_data.get("embed_cover", True))
+        self.chk_embed_cover = ttk.Checkbutton(self.opts_frame, text=self.tr("chk_embed_cover"), variable=self.embed_cover_var, command=self.save_config)
         self.chk_embed_cover.pack(anchor=tk.W)
 
-        self.save_cover_var = tk.BooleanVar(value=True)
-        self.chk_save_cover = ttk.Checkbutton(self.opts_frame, text=self.tr("chk_save_cover"), variable=self.save_cover_var)
+        self.save_cover_var = tk.BooleanVar(value=self.config_data.get("save_cover", True))
+        self.chk_save_cover = ttk.Checkbutton(self.opts_frame, text=self.tr("chk_save_cover"), variable=self.save_cover_var, command=self.save_config)
         self.chk_save_cover.pack(anchor=tk.W)
 
-        self.clean_junk_var = tk.BooleanVar(value=True)
-        self.chk_clean_junk = ttk.Checkbutton(self.opts_frame, text=self.tr("chk_clean_junk"), variable=self.clean_junk_var)
+        self.clean_junk_var = tk.BooleanVar(value=self.config_data.get("clean_junk", True))
+        self.chk_clean_junk = ttk.Checkbutton(self.opts_frame, text=self.tr("chk_clean_junk"), variable=self.clean_junk_var, command=self.save_config)
         self.chk_clean_junk.pack(anchor=tk.W)
 
-        self.fetch_lyrics_var = tk.BooleanVar(value=True)
-        self.chk_fetch_lyrics = ttk.Checkbutton(self.opts_frame, text=self.tr("chk_fetch_lyrics"), variable=self.fetch_lyrics_var)
+        self.fetch_lyrics_var = tk.BooleanVar(value=self.config_data.get("fetch_lyrics", True))
+        self.chk_fetch_lyrics = ttk.Checkbutton(self.opts_frame, text=self.tr("chk_fetch_lyrics"), variable=self.fetch_lyrics_var, command=self.save_config)
         self.chk_fetch_lyrics.pack(anchor=tk.W)
 
-        self.save_lrc_var = tk.BooleanVar(value=True)
-        self.chk_save_lrc = ttk.Checkbutton(self.opts_frame, text=self.tr("chk_save_lrc"), variable=self.save_lrc_var)
+        self.save_lrc_var = tk.BooleanVar(value=self.config_data.get("save_lrc", True))
+        self.chk_save_lrc = ttk.Checkbutton(self.opts_frame, text=self.tr("chk_save_lrc"), variable=self.save_lrc_var, command=self.save_config)
         self.chk_save_lrc.pack(anchor=tk.W)
 
-        self.lower_artist_var = tk.BooleanVar(value=False)
+        self.lower_artist_var = tk.BooleanVar(value=self.config_data.get("lower_artist", False))
         self.chk_lower_artist = ttk.Checkbutton(self.opts_frame, text=self.tr("chk_lower_artist"), variable=self.lower_artist_var, command=self.toggle_artist_casing)
         self.chk_lower_artist.pack(anchor=tk.W)
 
@@ -882,12 +1044,12 @@ class AutoTaggerGUI:
         self.rename_box = ttk.LabelFrame(self.meta_frame, text=self.tr("rename_box"), padding="5")
         self.rename_box.pack(fill=tk.X, pady=4)
 
-        self.rename_files_var = tk.BooleanVar(value=True)
-        self.chk_rename_files = ttk.Checkbutton(self.rename_box, text=self.tr("chk_rename_files"), variable=self.rename_files_var, command=self.refresh_treeview_preview)
+        self.rename_files_var = tk.BooleanVar(value=self.config_data.get("rename_files", True))
+        self.chk_rename_files = ttk.Checkbutton(self.rename_box, text=self.tr("chk_rename_files"), variable=self.rename_files_var, command=self._on_rename_option_changed)
         self.chk_rename_files.pack(anchor=tk.W)
 
-        self.multi_disc_format_var = tk.BooleanVar(value=True)
-        self.chk_multi_disc_fmt = ttk.Checkbutton(self.rename_box, text=self.tr("chk_multi_disc_fmt"), variable=self.multi_disc_format_var, command=self.refresh_treeview_preview)
+        self.multi_disc_format_var = tk.BooleanVar(value=self.config_data.get("multi_disc_format", True))
+        self.chk_multi_disc_fmt = ttk.Checkbutton(self.rename_box, text=self.tr("chk_multi_disc_fmt"), variable=self.multi_disc_format_var, command=self._on_rename_option_changed)
         self.chk_multi_disc_fmt.pack(anchor=tk.W)
 
         self.lbl_pattern = ttk.Label(self.rename_box, text=self.tr("lbl_pattern"))
@@ -906,9 +1068,13 @@ class AutoTaggerGUI:
             ],
             state="readonly"
         )
-        self.pattern_combo.current(0)
+        saved_pat = self.config_data.get("rename_pattern", "01. Artist - Title")
+        if saved_pat in self.pattern_combo["values"]:
+            self.pattern_combo.set(saved_pat)
+        else:
+            self.pattern_combo.current(0)
         self.pattern_combo.pack(fill=tk.X, pady=(0, 4))
-        self.pattern_combo.bind("<<ComboboxSelected>>", lambda e: self.refresh_treeview_preview())
+        self.pattern_combo.bind("<<ComboboxSelected>>", self._on_pattern_selected)
 
         btn_row = ttk.Frame(self.rename_box)
         btn_row.pack(fill=tk.X, pady=2)
@@ -971,6 +1137,13 @@ class AutoTaggerGUI:
         self.log_text = tk.Text(bot_frame, height=5, state=tk.DISABLED, bg="#1e272e", fg="#d2dae2", font=("Consolas", 9))
         self.log_text.pack(fill=tk.X)
         self.attach_context_menu(self.log_text)
+
+        # Apply initial tag states to input entries based on loaded config
+        self._on_tag_toggle()
+
+        # If language from config is English, apply it across the UI
+        if self.lang == "en":
+            self._apply_language()
 
     def log_message(self, msg: str):
         def _append():
@@ -1273,6 +1446,7 @@ class AutoTaggerGUI:
         self.cover_photo = None
 
     def toggle_artist_casing(self):
+        self.save_config()
         if not self.current_folder or self.current_folder not in self.album_prepared:
             return
         album_meta, matched_pairs, cover_path = self.album_prepared[self.current_folder]

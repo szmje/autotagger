@@ -8,6 +8,7 @@ __pycache__/
 .lyrics_cache.json
 .rym_cache.json
 *.cache
+config.json
 
 # Virtual environments
 .env
