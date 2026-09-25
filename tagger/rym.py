@@ -6,7 +6,12 @@ from typing import List, Optional, Tuple, Dict, Any
 from curl_cffi import requests
 from bs4 import BeautifulSoup
 
-CACHE_FILE = Path(__file__).resolve().parent.parent / ".rym_cache.json"
+import sys
+
+if getattr(sys, "frozen", False):
+    CACHE_FILE = Path(sys.executable).resolve().parent / ".rym_cache.json"
+else:
+    CACHE_FILE = Path(__file__).resolve().parent.parent / ".rym_cache.json"
 
 class RYMGenreFetcher:
     def __init__(self):

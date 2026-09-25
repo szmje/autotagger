@@ -6,7 +6,12 @@ import syncedlyrics
 
 from tagger.models import TrackMetadata
 
-CACHE_FILE = Path(__file__).resolve().parent.parent / ".lyrics_cache.json"
+import sys
+
+if getattr(sys, "frozen", False):
+    CACHE_FILE = Path(sys.executable).resolve().parent / ".lyrics_cache.json"
+else:
+    CACHE_FILE = Path(__file__).resolve().parent.parent / ".lyrics_cache.json"
 
 class LyricsManager:
     def __init__(self):

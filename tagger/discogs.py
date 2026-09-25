@@ -12,7 +12,12 @@ HEADERS = {
     "User-Agent": "AutoTaggerRYM/1.0 +https://github.com",
     "Accept": "application/json"
 }
-CACHE_FILE = Path(__file__).resolve().parent.parent / ".discogs_cache.json"
+import sys
+
+if getattr(sys, "frozen", False):
+    CACHE_FILE = Path(sys.executable).resolve().parent / ".discogs_cache.json"
+else:
+    CACHE_FILE = Path(__file__).resolve().parent.parent / ".discogs_cache.json"
 
 class DiscogsClient:
     def __init__(self):

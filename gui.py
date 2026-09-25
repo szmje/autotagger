@@ -22,7 +22,10 @@ from tagger.audio import AudioTagEngine
 from tagger.url_resolver import AlbumURLResolver
 from tagger.searcher import UnifiedAlbumSearcher
 
-CONFIG_PATH = Path(__file__).resolve().parent / "config.json"
+if getattr(sys, "frozen", False):
+    CONFIG_PATH = Path(sys.executable).resolve().parent / "config.json"
+else:
+    CONFIG_PATH = Path(__file__).resolve().parent / "config.json"
 
 DEFAULT_CONFIG = {
     "language": "ru",

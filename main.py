@@ -4,11 +4,22 @@ import argparse
 from pathlib import Path
 from typing import Optional
 
-# Ensure UTF-8 output on Windows
+# Ensure UTF-8 output and console attachment on Windows
 if sys.platform == "win32":
     try:
-        sys.stdout.reconfigure(encoding="utf-8")
-        sys.stderr.reconfigure(encoding="utf-8")
+        import ctypes
+        ctypes.windll.kernel32.AttachConsole(-1)
+        if sys.stdout is None:
+            sys.stdout = open("CONOUT$", "w", encoding="utf-8", errors="replace")
+        if sys.stderr is None:
+            sys.stderr = open("CONOUT$", "w", encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+    try:
+        if sys.stdout is not None:
+            sys.stdout.reconfigure(encoding="utf-8")
+        if sys.stderr is not None:
+            sys.stderr.reconfigure(encoding="utf-8")
     except Exception:
         pass
 

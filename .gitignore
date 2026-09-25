@@ -27,6 +27,11 @@ cover.jpg
 cover.png
 *.lrc
 
+# PyInstaller
+build/
+dist/
+*.spec
+
 # OS and IDE files
 .idea/
 .vscode/
